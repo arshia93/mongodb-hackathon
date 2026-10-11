@@ -7,3 +7,4 @@ dist/
 .context/
 .DS_Store
 *.log
+.superpowers/

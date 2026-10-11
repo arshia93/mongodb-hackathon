@@ -50,15 +50,41 @@ export const Target = z.object({
 export type Target = z.infer<typeof Target>;
 
 // collection: scenarios
-export const Scenario = z.object({
+export const ScenarioSource = z.enum(["planner", "regression", "manual", "production"]);
+export type ScenarioSource = z.infer<typeof ScenarioSource>;
+
+export const ScenarioShape = z.object({
   _id: z.string().optional(),
   targetId: z.string(),
   category: Category,
-  persona: z.string(),
-  goal: z.string(),
-  openingMessage: z.string(),
-  successCriteria: z.array(z.string()),
+  title: z.string().min(1).optional(),
+  persona: z.string().min(1),
+  goal: z.string().min(1),
+  openingMessage: z.string().min(1),
+  successCriteria: z.array(z.string().min(1)).min(1),
+  // Upper bound on simulated-user turns before the simulator must stop.
+  maxTurns: z.number().int().min(1).max(20).default(6),
+  // Which of the target's mustRules / mustNotRules this scenario tries to break (verbatim text).
+  probesRules: z.array(z.string().min(1)).default([]),
+  source: ScenarioSource.default("planner"),
 });
+
+// A policy_violation scenario with no rule to probe gives the judge nothing to grade against.
+export function requireRulesForPolicyViolation(
+  s: { category: Category; probesRules: string[] },
+  ctx: z.RefinementCtx,
+): void {
+  if (s.category === "policy_violation" && s.probesRules.length === 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["probesRules"],
+      message: "policy_violation scenarios must list the rule(s) they probe",
+    });
+  }
+}
+
+// Scenario is refined, so .extend/.pick/.omit are unavailable; derive from ScenarioShape and re-apply requireRulesForPolicyViolation.
+export const Scenario = ScenarioShape.superRefine(requireRulesForPolicyViolation);
 export type Scenario = z.infer<typeof Scenario>;
 
 export const Turn = z.object({
