@@ -302,8 +302,9 @@ describe("Scenario", () => {
   it("rejects missing or empty title, state or firstInput", () => {
     for (const key of ["title", "state", "firstInput"]) {
       expect(Scenario.safeParse({ ...base, [key]: "" }).success).toBe(false);
-      const { [key as keyof typeof base]: _, ...rest } = base;
-      expect(Scenario.safeParse(rest).success).toBe(false);
+      const missing: Record<string, unknown> = { ...base };
+      delete missing[key];
+      expect(Scenario.safeParse(missing).success).toBe(false);
     }
   });
 
