@@ -8,7 +8,7 @@ You should understand these definitions:
 
 
 You should understand that in our stack we have various LLMs enabling this.
-- The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios and then in real scenarios. We simulate scenarios to find the mistakes the agent commonly makes so they can be fixed BEFORE deploying it to the real world (real email clients, real calendars, real customers in customer support, etc.).
+- The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios (for the purpose of ironing out issues BEFORE deploying to real environments and scenarios). The LLM simulator produces fake inputs/outputs to the LLM under test's tool calls.
 - The LLM Planner takes in an environment plus routine and produces one or more scenarios to test that routine, along with the information an LLM Judge needs to grade the resulting trajectory (rollout) from the LLM under test. Each scenario is a markdown file with sections in a specific format; that format is defined elsewhere in this codebase, not here.
 - The simulator LLM is responsible for taking in a scenario (environment + state) and producing realistic inputs and outputs for the LLM under test to interact with.
 - The LLM Judge is responsible for grading the resulting trajectory (rollout) from the LLM under test.
