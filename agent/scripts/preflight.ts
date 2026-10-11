@@ -7,9 +7,9 @@ import { recordResult } from "../tools/record_result";
 import { saveScenarios } from "../tools/save_scenarios";
 
 const USAGE = `Usage:
-  preflight load <target>                         print the target's environment and routine rules
-  preflight save-scenarios <target> <file>        parse + save planner output (markdown or JSON)
-  preflight start-run <target>                    create a run, print its id
+  preflight load <job>                         print the target's environment and routine rules
+  preflight save-scenarios <job> <file>        parse + save planner output (markdown or JSON)
+  preflight start-run <job>                    create a run, print its id
   preflight record-result <runId> <file.json>     store {scenarioId, transcript, judge}
   preflight finalize <runId>                      summarize the run and print the verdict`;
 

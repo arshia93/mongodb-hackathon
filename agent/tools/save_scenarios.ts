@@ -11,15 +11,15 @@ import { loadTarget } from "./load_target";
 import { insertScenarios } from "./store";
 
 export async function saveScenarios(
-  targetId: string,
+  jobId: string,
   plannerOutput: string,
 ): Promise<{ scenarios: Scenario[]; missingCategories: Category[] }> {
-  const target = await loadTarget(targetId);
+  const target = await loadTarget(jobId);
   const planned = parseScenarios(plannerOutput);
   const unknown = unknownProbedRules(planned, target);
   if (unknown.length > 0) {
     throw new Error(`Rules probed that are not in the routine (copy them verbatim):\n- ${unknown.join("\n- ")}`);
   }
-  const scenarios = await insertScenarios(targetId, planned.map((p) => toScenario(p, targetId)));
+  const scenarios = await insertScenarios(jobId, planned.map((p) => toScenario(p, jobId)));
   return { scenarios, missingCategories: missingCategories(scenarios) };
 }

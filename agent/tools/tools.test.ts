@@ -54,8 +54,8 @@ describe("load_target", () => {
   });
 
   it("fails on an unknown target and on path tricks", async () => {
-    await expect(loadTarget("nope")).rejects.toThrow(/Unknown target/);
-    await expect(loadTarget("../README")).rejects.toThrow(/Invalid target id/);
+    await expect(loadTarget("nope")).rejects.toThrow(/Job not found/);
+    await expect(loadTarget("../README")).rejects.toThrow(/Invalid job id/);
   });
 });
 

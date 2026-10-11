@@ -7,7 +7,7 @@ export type StepResult =
   | { done: true; runId: string }; // run finished; fetch the report
 
 export interface Runner {
-  startRun(targetId: string, mode: RunMode, count?: number): Promise<{ runId: string }>;
+  startRun(jobId: string, mode: RunMode, count?: number): Promise<{ runId: string }>;
   // Pull mode only: submit the agent's reply (omit on the first call) and get the next message.
   stepRun(runId: string, reply?: string): Promise<StepResult>;
 }

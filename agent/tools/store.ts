@@ -24,14 +24,14 @@ async function writeJson(path: string, value: unknown): Promise<void> {
 
 const newId = (prefix: string) => `${prefix}_${randomUUID()}`;
 
-export async function insertScenarios(targetId: string, scenarios: Scenario[]): Promise<Scenario[]> {
+export async function insertScenarios(jobId: string, scenarios: Scenario[]): Promise<Scenario[]> {
   const saved = scenarios.map((s) => ({ ...s, _id: newId("scn") }));
-  await writeJson(join(root(), "scenarios", `${targetId}.json`), saved);
+  await writeJson(join(root(), "scenarios", `${jobId}.json`), saved);
   return saved;
 }
 
-export const findScenarios = (targetId: string) =>
-  readJson<Scenario[]>(join(root(), "scenarios", `${targetId}.json`), []);
+export const findScenarios = (jobId: string) =>
+  readJson<Scenario[]>(join(root(), "scenarios", `${jobId}.json`), []);
 
 export async function insertRun(run: Omit<Run, "_id">): Promise<Run & { _id: string }> {
   const saved = { ...run, _id: newId("run") };

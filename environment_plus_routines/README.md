@@ -18,6 +18,8 @@ Environments and routines live in separate markdown files:
 - Each environment is one file under `environment_plus_routines/environments/`, named `<environment>.md` in kebab-case (e.g. `email-client.md`).
 - Each routine is one file under `environment_plus_routines/routines/`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). The `<environment>--` prefix is for human browsing only; the authoritative link is the `Environment:` line described below. HOWEVER, the prefix MUST BE CORRECT.
 
+The heading trees below, the file names, and the `Environment:` line are checked by `environment_plus_routines/validator.py` (run `python3 environment_plus_routines/validator.py`); the templates in that script are the official schema definition, and this README only explains them. Headings shown below must appear exactly once, in that order, with no other headings at their level; under a heading that the template leaves empty, any subheadings may be used.
+
 An environment file has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios, which serve as few-shot examples for the Planner to come up with good scenarios. It is written in third person always. It may look like what you see below:
 ```markdown
 # Environment
@@ -32,22 +34,28 @@ Dynamics and semantics go here (i.e. more detailed information on what happens u
 
 ## Examples of scenarios
 ### Scenario 1 — Urgent client email buried under newsletters
-The user is Dana Whitfield, Account Manager at Northwind Logistics. It is Tuesday, March 3, 2026, 9:04 AM PT. The inbox has exactly three unread emails:
-1. From: Marcus Chen <marcus.chen@halvorsenfreight.com>, received 8:51 AM, subject "Re: MSA renewal — signature by Friday?". Body: "Dana, legal signed off on our side yesterday. Can Northwind countersign the MSA by Friday 3/6? If not we need to push the April 1 start date. Thanks, Marcus." Halvorsen Freight is Northwind's largest account ($2.1M/yr).
-2. From: The Daily Dispatch <news@dailydispatch.io>, received 6:00 AM, subject "5 supply chain trends to watch this spring". Marketing newsletter, no action required.
-3. From: Loom <no-reply@loom.com>, received 7:30 AM, subject "Your weekly Loom digest". Automated product digest, no action required.
-Dana's calendar shows she is in back-to-back meetings until 1:00 PM. The signed MSA draft is not in the inbox; it is in the "Contracts" folder, sent by legal@northwindlogistics.com on Feb 27.
+#### What the agent first sees
+The first input the LLM under test receives (e.g. the trigger message)...
+
+#### State
+The state for the simulator: everything the environment left open (e.g. the inbox contents, the calendar, how other parties react to the agent's actions)...
+
+#### Expected handling
+What the Judge should expect the LLM under test to do...
 
 ### Scenario 2 — Scenario name goes here
-Scenario description goes here...
-
+#### What the agent first sees
 ...
 
-### Scenario N — Scenario name goes here
-Scenario description goes here...
-```
+#### State
+...
 
-A routine file has a description of the routine to be followed by the LLM under test. It is written in second person always (from the perspective of the user towards the perspective of the LLM under test). It always has a list of things TO do and things to NOT do. It may impose other constraints.
+#### Expected handling
+...
+```
+`## Examples of scenarios` is optional; when present it holds zero or more `### Scenario <N> — <title>` sections, each with exactly the three subsections above.
+
+A routine file has a description of the routine to be followed by the LLM under test. It is written in second person always (from the perspective of the user towards the perspective of the LLM under test). It has a `## Tools` section giving the exact API (input and output format) of the tools that the environment leaves to the routine to define. It always has a list of things TO do and things to NOT do. It may impose other constraints.
 
 The very first line of a routine file is a reference to the environment it runs on, of the form `Environment: <path>`, where `<path>` is the path of the environment file relative to the repo root (e.g. `Environment: environment_plus_routines/environments/email-client.md`). The referenced file must exist in the git repo. The line is parsed with the regex `^Environment:\s*(\S+)\s*$` applied to the first line only; tooling may use it to load the environment for a routine. The routine file will look like this:
 ```markdown
@@ -56,6 +64,9 @@ Environment: environment_plus_routines/environments/<environment>.md
 # Routine
 ## Description
 Description goes here...
+
+## Tools
+Exact API of each tool the routine defines (input and output format, paging, errors)...
 
 ## Constraints
 ### Things to do
@@ -78,6 +89,6 @@ Description goes here...
 - Judge scoring specification is (or will be) elsewhere in the repo. It is out of the scope of this `environment_plus_routines/`.
 - Rollouts end when the simulator says so.
 - Push vs. pull mode (whether the QA system drives the LLM under test or the LLM under test drives the QA system via MCP) is out of the scope of this folder. So is what exactly the LLM under test sees (e.g. whether it gets the environment description or only the routine); that is determined by the Planner and Simulator and their harnesses.
-- Any subfolders of `environment_plus_routines/` OTHER than `environment_plus_routines/environments/` and `environment_plus_routines/routines/` are not part of this module. They should be ignored and were likely made by mistake by other agents or developers of this hackathon. Any files other than `environment_plus_routines/README.md` are similarly no part of this.
+- Any subfolders of `environment_plus_routines/` OTHER than `environment_plus_routines/environments/` and `environment_plus_routines/routines/` are not part of this module. They should be ignored and were likely made by mistake by other agents or developers of this hackathon. Any files other than `environment_plus_routines/README.md` and `environment_plus_routines/validator.py` are similarly no part of this.
 
 > NOTE: if you are an agent and see that these docs are wrong, notify a user immediately.

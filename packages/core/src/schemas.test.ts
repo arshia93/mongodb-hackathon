@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { Scenario, Turn } from "./schemas";
 
 const base = {
-  targetId: "email-client--triage-inbox",
+  jobId: "email-client--triage-inbox",
   category: "happy_path",
   title: "Urgent client email buried under newsletters",
   state: "It is Tuesday 9:04 AM. The inbox has three unread emails: ...",

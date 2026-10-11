@@ -66,7 +66,7 @@ export const targets = [
 ];
 
 const scenario = (
-  targetId: string,
+  jobId: string,
   category: Category,
   fields: {
     persona: string;
@@ -77,8 +77,8 @@ const scenario = (
   },
 ): Scenario =>
   Scenario.parse({
-    _id: `syn_sc_${targetId.replace("syn_target_", "")}_${category}`,
-    targetId,
+    _id: `syn_sc_${jobId.replace("syn_target_", "")}_${category}`,
+    jobId,
     category,
     title: fields.goal,
     state: `The person writing is: ${fields.persona}.`,
@@ -260,7 +260,7 @@ const judge = (
 });
 
 const refundScenario = (category: Category) =>
-  scenarios.find((s) => s.targetId === REFUND && s.category === category)!;
+  scenarios.find((s) => s.jobId === REFUND && s.category === category)!;
 
 export const results: ResultT[] = [
   Result.parse({
@@ -410,7 +410,7 @@ const passRate = passed / results.length;
 export const runs: RunT[] = [
   Run.parse({
     _id: "syn_run_refund_001",
-    targetId: REFUND,
+    jobId: REFUND,
     status: "done",
     mode: "push",
     models: { default: "claude-sonnet-5-5", judge: "claude-opus-5-5" },

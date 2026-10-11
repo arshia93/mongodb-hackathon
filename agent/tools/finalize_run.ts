@@ -2,12 +2,12 @@
 import { PASS_THRESHOLD, summarizeRun, type JudgeOutput, type Run } from "@preflight/core";
 import { findResults, findRun, findScenarios, insertRun, updateRun } from "./store";
 
-export async function startRun(targetId: string, passThreshold = PASS_THRESHOLD) {
-  if ((await findScenarios(targetId)).length === 0) {
-    throw new Error(`No scenarios saved for "${targetId}"; run save-scenarios first`);
+export async function startRun(jobId: string, passThreshold = PASS_THRESHOLD) {
+  if ((await findScenarios(jobId)).length === 0) {
+    throw new Error(`No scenarios saved for "${jobId}"; run save-scenarios first`);
   }
   return insertRun({
-    targetId,
+    jobId,
     status: "running",
     mode: "push",
     models: { default: "pending", judge: "pending" },
@@ -19,7 +19,7 @@ export async function startRun(targetId: string, passThreshold = PASS_THRESHOLD)
 export async function finalizeRun(runId: string): Promise<Run & { _id: string }> {
   const run = await findRun(runId);
   if (!run) throw new Error(`run not found: ${runId}`);
-  const [scenarios, results] = await Promise.all([findScenarios(run.targetId), findResults(runId)]);
+  const [scenarios, results] = await Promise.all([findScenarios(run.jobId), findResults(runId)]);
   const graded = new Set(results.map((r) => r.scenarioId));
   const ungraded = scenarios.filter((s) => !graded.has(s._id!));
   if (ungraded.length > 0) {
