@@ -18,12 +18,6 @@ importers:
         specifier: workspace:*
         version: link:../packages/core
 
-  examples/refund-bot:
-    dependencies:
-      '@preflight/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-
   packages/core:
     dependencies:
       zod:
