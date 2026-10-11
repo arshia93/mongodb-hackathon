@@ -10,7 +10,7 @@ You should understand these definitions:
 You should understand that in our stack we have various LLMs enabling this.
 - The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios (for the purpose of ironing out issues BEFORE deploying to real environments and scenarios). The LLM simulator produces fake inputs/outputs to the LLM under test's tool calls.
 - The LLM Planner takes in an environment plus routine and produces one or more scenarios to test that routine, along with the information an LLM Judge needs to grade the resulting trajectory (rollout) from the LLM under test. Each scenario is a markdown file with sections in a specific format; that format is defined elsewhere in this codebase, not here.
-- The simulator LLM is responsible for taking in a scenario (environment + state) and producing realistic inputs and outputs for the LLM under test to interact with.
+- The simulator LLM is responsible for taking in a scenario (environment + state) and producing realistic inputs and outputs for the LLM under test to interact with. This may involve simulating gmail, gcal, calendly, google maps, users, computer systems, APIs, etc... It simulates _everything_. Unless something changes in this repo, there are no real programmatic environments for simulations.
 - The LLM Judge is responsible for grading the resulting trajectory (rollout) from the LLM under test.
 - The QA system is an MCP-accessible service that an LLM under test could access to create the scenarios and test itself on them (step by step).
 
