@@ -1,6 +1,7 @@
 // Scenario set = the JSON the planner returns and the format of hand-authored scenario files:
 //   { "scenarios": [ { category, title, state, firstInput, successCriteria, ... } ] }
 import { z } from "zod";
+import { parseModelJson } from "./json";
 import {
   Category,
   requireRulesForPolicyViolation,
@@ -19,27 +20,8 @@ export type PlannedScenario = z.infer<typeof PlannedScenario>;
 export const ScenarioSet = z.object({ scenarios: z.array(PlannedScenario).min(1) });
 export type ScenarioSet = z.infer<typeof ScenarioSet>;
 
-// Models like to wrap JSON in markdown fences; accept that, nothing more lenient.
-function stripFence(text: string): string {
-  const match = text.trim().match(/^```(?:json)?\s*\n([\s\S]*?)\n\s*```$/);
-  return match ? match[1] : text.trim();
-}
-
 export function parseScenarioSet(text: string): ScenarioSet {
-  let raw: unknown;
-  try {
-    raw = JSON.parse(stripFence(text));
-  } catch (err) {
-    throw new Error(`Invalid scenario set: not valid JSON (${(err as Error).message})`);
-  }
-  const result = ScenarioSet.safeParse(raw);
-  if (!result.success) {
-    const detail = result.error.issues
-      .map((i) => `${i.path.join(".")}: ${i.message}`)
-      .join("; ");
-    throw new Error(`Invalid scenario set: ${detail}`);
-  }
-  return result.data;
+  return parseModelJson(text, ScenarioSet, "scenario set");
 }
 
 export function toScenario(
