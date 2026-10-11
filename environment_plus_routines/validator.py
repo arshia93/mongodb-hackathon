@@ -19,6 +19,10 @@ Example `visualize` output:
 
 Checks: kebab-case filenames, the routine's `Environment:` line (regex, file exists, matches the
 filename prefix), and the heading tree below. Headings inside ``` fences are ignored.
+
+TODO(hadriano): review this more carefully. On a quick pass it looks OK but the exact semantics and error/edge
+    cases are not tested (too much scope for a hackathon).
+NOTE that this is witten entirely by Fable 5.1 via Factory droid.
 """
 import re
 import sys
