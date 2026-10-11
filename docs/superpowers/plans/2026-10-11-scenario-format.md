@@ -30,15 +30,15 @@
 
 ## Team split
 
-Three people can work this in parallel after Task 3 (Tasks 1-3 are one sequential chain in `packages/core`, so one person does them and merges quickly):
+You are Person 1 (agent brain) and own this branch, including the small shared-contract change in `packages/core` (Tasks 1-3). Keep those PRs small and merge them quickly so Persons 2 and 3 can rebase.
 
 | Person | Tasks |
 |---|---|
-| Whoever owns `packages/core` (Person 2) | 1, 2, 3 |
-| Person 2 or 3 (after Task 3 merges) | 4 (refund-bot scenario fixture) |
-| Person 1 (agent) (after Task 3 merges) | 5 (planner instructions) |
+| Person 1 (you) | 1, 2, 3 (core contract), 5 (planner instructions) |
+| Person 2 (refund-bot owner) | 4 (scenario fixture for their target; align the rule strings with their target spec) |
+| Person 3 (web) | none; just consumes the new `Scenario` fields |
 
-Subagent-driven execution runs tasks one at a time regardless; the split matters if teammates run their own sessions.
+Tasks 1-3 are one sequential chain. Task 4 and 5 can run in parallel after Task 3 merges. Subagent-driven execution runs tasks one at a time regardless; the split matters if teammates run their own sessions. If Person 2 is busy, Task 4 can also be done here.
 
 ---
 
@@ -47,7 +47,6 @@ Subagent-driven execution runs tasks one at a time regardless; the split matters
 **Files:**
 - Modify: `packages/core/package.json`
 - Modify: `package.json`
-- Modify: `.gitignore`
 - Create: `packages/core/vitest.config.ts`
 - Create: `packages/core/src/schemas.test.ts`
 
@@ -71,7 +70,6 @@ and add
 }
 ```
 In root `package.json` add to `"scripts"`: `"test": "pnpm -r --if-present test"`.
-Append `.superpowers/` to `.gitignore`.
 
 Create `packages/core/vitest.config.ts`:
 ```ts
@@ -112,7 +110,7 @@ Expected: 1 passed.
 - [ ] **Step 4: Commit**
 
 ```bash
-git add package.json pnpm-lock.yaml .gitignore packages/core
+git add package.json pnpm-lock.yaml packages/core
 git commit -m "chore(core): add vitest harness"
 ```
 
