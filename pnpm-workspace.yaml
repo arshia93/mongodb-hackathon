@@ -1,0 +1,5 @@
+packages:
+  - agent
+  - web
+  - packages/*
+  - examples/*

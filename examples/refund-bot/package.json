@@ -1,0 +1,9 @@
+{
+  "name": "@preflight/refund-bot",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@preflight/core": "workspace:*"
+  }
+}
