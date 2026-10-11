@@ -4,6 +4,7 @@ import { runLocal } from "@preflight/core";
 import Anthropic from "@anthropic-ai/sdk";
 import { createModels } from "./models";
 import { createStubAgent } from "./stub-agent";
+import { persistRun } from "./persist";
 
 const [jobId, count] = process.argv.slice(2);
 if (!jobId) {
@@ -11,6 +12,8 @@ if (!jobId) {
   process.exit(1);
 }
 const job = loadJob(jobId);
+const uri = process.env.MONGODB_URI;
+if (!uri) throw new Error("MONGODB_URI is not set");
 const client = new Anthropic();
 const { run, results } = await runLocal(job, createModels({ client: client as never }), createStubAgent(job, client), {
   count: count ? Number(count) : undefined,
@@ -18,3 +21,5 @@ const { run, results } = await runLocal(job, createModels({ client: client as ne
     console.log(`${r.judge?.passed ? "PASS" : "FAIL"} [${r.judge?.category}/${r.judge?.severity}] ${r.scenarioId} (${r.transcript.length} turns): ${r.judge?.reasoning}`),
 });
 console.log(`\nverdict: ${run.verdict}`, JSON.stringify(run.summary));
+await persistRun(uri, run, results);
+console.log(`saved run ${run._id} to preflight database`);
