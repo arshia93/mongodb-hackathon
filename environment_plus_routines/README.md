@@ -49,7 +49,7 @@ Scenario description goes here...
 
 A routine file has a description of the routine to be followed by the LLM under test. It is written in second person always (from the perspective of the user towards the perspective of the LLM under test). It always has a list of things TO do and things to NOT do. It may impose other constraints.
 
-The very first line of a routine file is a reference to the environment it runs on, of the form `Environment: <path>`, where `<path>` is the path of the environment file relative to the repo root (e.g. `Environment: environment_plus_routines/environments/email-client.md`). The referenced file must exist in the git repo. The line is parsed with the regex `^Environment:\s*(\S+)\s*$` applied to the first line only; tooling may use it to load the environment for a routine, and `packages/core/src/routines.test.ts` checks every routine against it. The routine file will look like this:
+The very first line of a routine file is a reference to the environment it runs on, of the form `Environment: <path>`, where `<path>` is the path of the environment file relative to the repo root (e.g. `Environment: environment_plus_routines/environments/email-client.md`). The referenced file must exist in the git repo. The line is parsed with the regex `^Environment:\s*(\S+)\s*$` applied to the first line only; tooling may use it to load the environment for a routine. The routine file will look like this:
 ```markdown
 Environment: environment_plus_routines/environments/<environment>.md
 
