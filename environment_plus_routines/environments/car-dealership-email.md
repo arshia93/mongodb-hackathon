@@ -60,7 +60,7 @@ After that, it acts only through tool calls. Each returns JSON, or `{"error": "<
 - `send_email(to: list[string], subject: string, body: string)` sends a new email. Returns `{sent_id}`.
 - `move_email(id: string, folder: string)` moves an email to `Archive`, `Trash`, `Needs Review`, or `Inbox`. Returns `{id, folder}`.
 
-The inventory and calendar tools are `see_inventory` and `see_calendar`, defined in the Routine. When finished, the LLM under test emits a final plain-text message with no tool call.
+The inventory and calendar tools are `see_inventory` and `see_calendar`. The environment only fixes what they read (see Inventory and Calendar above); the routine that runs on this environment specifies their exact API format (arguments, paging, and return shape). When finished, the LLM under test emits a final plain-text message with no tool call.
 
 ## Dynamics and Semantics
 - Sent emails are irreversible.
