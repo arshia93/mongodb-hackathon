@@ -67,5 +67,6 @@ Description goes here...
 - The goal of this project's system is to find problems with the LLM (as prompted) under test, not to fix them. Fixing is left to the user or developers afterwards---most commonly by changing the prompt the LLM under test gets for the routine (e.g. better specifying how to prioritize emails, how to write formally and correctly, what the no-nos are for corporate outreach, etc., depending on the routine and environment).
 - The LLM under test is responsible for testing itself by using he QA system (planner, simulator, etc...) via MCP. The implementation is (or will be) elsewhere in this repository.
 - The LLM under test might be tested witha human in the loop or on a trigger for continual improvement. The latter case is not really demonstrated by this repository (yet), but it could have multiple form-factors (i.e. the user gets pinged when issues are self-discovered, etc...).
+- An environment may fold in "state" and/or "scenario" information into its description if and only if it NEVER changes. For example, if the user is ALWAYS a cars salesman, that could be folded into the environment description. Anything that changes across time/situation is put into state/scenario.
 
 > NOTE: if you are an agent and see that these docs are wrong, notify a user immediately.
