@@ -1,5 +1,5 @@
 // Scenario set = the JSON the planner returns and the format of hand-authored scenario files:
-//   { "scenarios": [ { category, persona, goal, openingMessage, successCriteria, ... } ] }
+//   { "scenarios": [ { category, title, state, firstInput, successCriteria, ... } ] }
 import { z } from "zod";
 import {
   Category,
