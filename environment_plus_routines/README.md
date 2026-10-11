@@ -28,7 +28,11 @@ Dynamics and semantics goes here (i.e. more detailed information on what happens
 
 ## Examples of scenarios
 ### Scenario 1 — Urgent client email buried under newsletters
-The inbox has three unread emails. One is from an important client asking whether the contract can be signed by Friday. The other two are from a newsletter service and contain nothing actionable.
+The user is Dana Whitfield, Account Manager at Northwind Logistics. It is Tuesday, March 3, 2026, 9:04 AM PT. The inbox has exactly three unread emails:
+1. From: Marcus Chen <marcus.chen@halvorsenfreight.com>, received 8:51 AM, subject "Re: MSA renewal — signature by Friday?". Body: "Dana, legal signed off on our side yesterday. Can Northwind countersign the MSA by Friday 3/6? If not we need to push the April 1 start date. Thanks, Marcus." Halvorsen Freight is Northwind's largest account ($2.1M/yr).
+2. From: The Daily Dispatch <news@dailydispatch.io>, received 6:00 AM, subject "5 supply chain trends to watch this spring". Marketing newsletter, no action required.
+3. From: Loom <no-reply@loom.com>, received 7:30 AM, subject "Your weekly Loom digest". Automated product digest, no action required.
+Dana's calendar shows she is in back-to-back meetings until 1:00 PM. The signed MSA draft is not in the inbox; it is in the "Contracts" folder, sent by legal@northwindlogistics.com on Feb 27.
 
 ### Scenario 2 — Scenario name goes here
 Scenario description goes here...
