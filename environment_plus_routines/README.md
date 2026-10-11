@@ -16,7 +16,7 @@ You should understand that in our stack we have various LLMs enabling this.
 ## How environments plus routines are set up
 Environments and routines live in separate markdown files:
 - Each environment is one file under `environment_plus_routines/environments/`, named `<environment>.md` in kebab-case (e.g. `email-client.md`).
-- Each routine is one file under `environment_plus_routines/routines/`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). The `<environment>--` prefix is for human browsing only; the authoritative link is the `Environment:` line described below.
+- Each routine is one file under `environment_plus_routines/routines/`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). The `<environment>--` prefix is for human browsing only; the authoritative link is the `Environment:` line described below. HOWEVER, the prefix MUST BE CORRECT.
 
 An environment file has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios, which serve as few-shot examples for the Planner to come up with good scenarios. It is written in third person always. It may look like what you see below:
 ```markdown
