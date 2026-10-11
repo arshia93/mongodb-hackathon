@@ -20,6 +20,9 @@ importers:
       '@preflight/core':
         specifier: workspace:*
         version: link:../packages/core
+      mongodb:
+        specifier: ^6
+        version: 6.21.0
       zod:
         specifier: ^3.23.0
         version: 3.25.76
