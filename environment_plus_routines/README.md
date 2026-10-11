@@ -61,12 +61,14 @@ Description goes here...
 ...
 ```
 
-## Things to note
+## Things to note/FAQ answers
 - Right now we will have only a small number of environments plus routines for the hackathon, so we do not split environments and routines into separate files (the environment description is repeated in each file that uses it). For a real project that could be different. This exact format may evolve. All agents must confirm with the user if there is ambiguity.
 - This project is meant for agents that run on a schedule or under triggers, such as GrokBot, OpenClaw, Muse, etc. GrokBot is alluded to throughout because the developers of this repository have used it, but the approach is not exclusive to GrokBot. The trigger details are not relevant here, however it could be on crons/schedules or events.
 - The goal of this project's system is to find problems with the LLM (as prompted) under test, not to fix them. Fixing is left to the user or developers afterwards---most commonly by changing the prompt the LLM under test gets for the routine (e.g. better specifying how to prioritize emails, how to write formally and correctly, what the no-nos are for corporate outreach, etc., depending on the routine and environment).
 - The LLM under test is responsible for testing itself by using he QA system (planner, simulator, etc...) via MCP. The implementation is (or will be) elsewhere in this repository.
 - The LLM under test might be tested witha human in the loop or on a trigger for continual improvement. The latter case is not really demonstrated by this repository (yet), but it could have multiple form-factors (i.e. the user gets pinged when issues are self-discovered, etc...).
 - An environment may fold in "state" and/or "scenario" information into its description if and only if it NEVER changes. For example, if the user is ALWAYS a cars salesman, that could be folded into the environment description. Anything that changes across time/situation is put into state/scenario.
+- Judge scoring specification is (or will be) elsewhere in the repo. It is out of the scope of this `environment_plus_routines/`.
+- Rollouts end when the simulator says so.
 
 > NOTE: if you are an agent and see that these docs are wrong, notify a user immediately.
