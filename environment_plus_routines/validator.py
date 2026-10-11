@@ -199,7 +199,8 @@ def visualize():
     for p in files("routines"):
         ref = environment_ref(p.read_text().splitlines())
         env = Path(ref).stem if ref else "<no valid Environment: line>"
-        routines.setdefault(env, []).append(p.stem.split("--", 1)[-1])
+        # This should crash if the environment is malformed
+        routines[env].append(p.stem.split("--", 1)[-1])
     for env, names in routines.items():
         print(env)
         for i, name in enumerate(sorted(names), 1):
