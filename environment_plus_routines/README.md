@@ -78,5 +78,6 @@ Description goes here...
 - Judge scoring specification is (or will be) elsewhere in the repo. It is out of the scope of this `environment_plus_routines/`.
 - Rollouts end when the simulator says so.
 - Push vs. pull mode (whether the QA system drives the LLM under test or the LLM under test drives the QA system via MCP) is out of the scope of this folder. So is what exactly the LLM under test sees (e.g. whether it gets the environment description or only the routine); that is determined by the Planner and Simulator and their harnesses.
+- Any subfolders of `environment_plus_routines/` OTHER than `environment_plus_routines/environments/` and `environment_plus_routines/routines/` are not part of this module. They should be ignored and were likely made by mistake by other agents or developers of this hackathon. Any files other than `environment_plus_routines/README.md` are similarly no part of this.
 
 > NOTE: if you are an agent and see that these docs are wrong, notify a user immediately.
