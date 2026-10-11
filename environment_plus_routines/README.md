@@ -14,7 +14,11 @@ You should understand that in our stack we have various LLMs enabling this.
 - The QA system is an MCP-accessible service that an LLM under test could access to create the scenarios and test itself on them (step by step).
 
 ## How environments plus routines are set up
-Each environment plus routine is a markdown file under `environment_plus_routines/contents`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). Each one is a single markdown file with two root sections, in this order: (1) the environment description and (2) the routine description. The environment description has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios, which serve as few-shot examples for the Planner to come up with good scenarios. It is written in third person always. It may look like what you see below:
+Environments and routines live in separate markdown files:
+- Each environment is one file under `environment_plus_routines/environments/`, named `<environment>.md` in kebab-case (e.g. `email-client.md`).
+- Each routine is one file under `environment_plus_routines/routines/`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). The `<environment>--` prefix is for human browsing only; the authoritative link is the `Environment:` line described below.
+
+An environment file has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios, which serve as few-shot examples for the Planner to come up with good scenarios. It is written in third person always. It may look like what you see below:
 ```markdown
 # Environment
 ## Description
@@ -43,8 +47,12 @@ Scenario description goes here...
 Scenario description goes here...
 ```
 
-The routine description has a description of the routine to be followed by the LLM under test. It is written in second person always (from the perspective of the user towards the perspective of the LLM under test). It always has a list of things TO do and things to NOT do. It may impose other constraints. It will look like this:
+A routine file has a description of the routine to be followed by the LLM under test. It is written in second person always (from the perspective of the user towards the perspective of the LLM under test). It always has a list of things TO do and things to NOT do. It may impose other constraints.
+
+The very first line of a routine file is a reference to the environment it runs on, of the form `Environment: <path>`, where `<path>` is the path of the environment file relative to the repo root (e.g. `Environment: environment_plus_routines/environments/email-client.md`). The referenced file must exist in the git repo. The line is parsed with the regex `^Environment:\s*(\S+)\s*$` applied to the first line only; tooling may use it to load the environment for a routine. The routine file will look like this:
 ```markdown
+Environment: environment_plus_routines/environments/<environment>.md
+
 # Routine
 ## Description
 Description goes here...
@@ -61,7 +69,7 @@ Description goes here...
 ```
 
 ## Things to note/FAQ answers
-- Right now we will have only a small number of environments plus routines for the hackathon, so we do not split environments and routines into separate files (the environment description is repeated in each file that uses it). For a real project that could be different. This exact format may evolve. All agents must confirm with the user if there is ambiguity.
+- Environments and routines are separate files so that one environment can be shared by several routines without repeating its description. A routine references exactly one environment via its `Environment:` line. This exact format may evolve. All agents must confirm with the user if there is ambiguity.
 - This project is meant for agents that run on a schedule or under triggers, such as GrokBot, OpenClaw, Muse, etc. GrokBot is alluded to throughout because the developers of this repository have used it, but the approach is not exclusive to GrokBot. The trigger details are not relevant here, however it could be on crons/schedules or events.
 - The goal of this project's system is to find problems with the LLM (as prompted) under test, not to fix them. Fixing is left to the user or developers afterwards---most commonly by changing the prompt the LLM under test gets for the routine (e.g. better specifying how to prioritize emails, how to write formally and correctly, what the no-nos are for corporate outreach, etc., depending on the routine and environment).
 - The LLM under test is responsible for testing itself by using the QA system (planner, simulator, etc...) via MCP. The implementation is (or will be) elsewhere in this repository.
