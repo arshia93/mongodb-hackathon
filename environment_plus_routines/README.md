@@ -6,8 +6,10 @@ You should understand these definitions:
 3. By a "scenario" we mean the tuple (environment, state). So "Google Calendar" is NOT a scenario, but "Google Calendar with these specific events in it" IS a scenario.
 4. By a "routine" we mean a task description for an LLM under test (i.e. GrokBot) to behave in an environment conditioned on its state (in other words, a task description for what to do under different scenarios).
 
+The goal of this system is to find problems with the LLM under test, not to fix them. Fixing is left to the user or developers afterwards; most commonly by changing the prompt the LLM under test gets for the routine (e.g. better specifying how to prioritize emails, how to write formally and correctly, what the no-nos are for corporate outreach, etc., depending on the routine and environment).
+
 You should understand that in our stack we have various LLMs enabling this.
-- The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios and then in real scenarios. We simulate scenarios to find the mistakes the agent commonly makes so we can fix its prompts (etc.) BEFORE deploying it to the real world (real email clients, real calendars, real customers in customer support, etc.).
+- The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios and then in real scenarios. We simulate scenarios to find the mistakes the agent commonly makes so they can be fixed BEFORE deploying it to the real world (real email clients, real calendars, real customers in customer support, etc.).
 - The LLM Planner takes in an environment plus routine and produces one or more scenarios to test that routine, along with the information an LLM Judge needs to grade the resulting trajectory (rollout) from the LLM under test. Each scenario is a markdown file with sections in a specific format; that format is defined elsewhere in this codebase, not here.
 - The simulator LLM is responsible for taking in a scenario (environment + state) and producing realistic inputs and outputs for the LLM under test to interact with.
 - The LLM Judge is responsible for grading the resulting trajectory (rollout) from the LLM under test.
