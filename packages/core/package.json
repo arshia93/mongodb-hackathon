@@ -8,10 +8,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "mongodb": "^6",
     "zod": "^3.23.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22"
   }
 }

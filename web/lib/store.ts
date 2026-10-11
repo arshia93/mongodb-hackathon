@@ -4,15 +4,17 @@ import {
   type StepResult,
   type Target,
   type Runner,
+} from "@preflight/core";
+import { randomUUID } from "node:crypto";
+
+import { getDb } from "./db";
+import {
   findResults,
   findRun,
   findTarget,
   insertRun,
   insertTarget,
-} from "@preflight/core";
-import { randomUUID } from "node:crypto";
-
-import { getDb } from "./db";
+} from "./repository";
 
 export function registerTarget(spec: Omit<Target, "_id" | "createdAt">): Promise<string> {
   return insertTarget(getDb(), spec);

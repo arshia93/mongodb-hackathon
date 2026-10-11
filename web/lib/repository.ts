@@ -1,15 +1,9 @@
-// Mongo read/write helpers for the four collections in schemas.ts.
+// Mongo read/write helpers for the four collections in @preflight/core's schemas.
 import { randomUUID } from "node:crypto";
 
 import { type Db } from "mongodb";
 
-import { Result, Run, Target } from "./schemas";
-import {
-  results as seedResults,
-  runs as seedRuns,
-  scenarios as seedScenarios,
-  targets as seedTargets,
-} from "./synthetic";
+import { Result, Run, Target } from "@preflight/core";
 
 type StringIdDoc = { _id?: string; [field: string]: unknown };
 
@@ -47,21 +41,4 @@ export async function insertResults(db: Db, results: Result[]): Promise<void> {
 export async function findResults(db: Db, runId: string): Promise<Result[]> {
   const docs = await db.collection<StringIdDoc>("results").find({ runId }).toArray();
   return docs.map((doc) => Result.parse(doc));
-}
-
-// Upserts the synthetic seed data so the dashboard has something to show.
-export async function seedSynthetic(db: Db): Promise<void> {
-  const collections = [
-    { name: "targets", docs: seedTargets },
-    { name: "scenarios", docs: seedScenarios },
-    { name: "runs", docs: seedRuns },
-    { name: "results", docs: seedResults },
-  ] as const;
-  for (const { name, docs } of collections) {
-    await db.collection<StringIdDoc>(name).bulkWrite(
-      docs.map((doc) => ({
-        replaceOne: { filter: { _id: doc._id }, replacement: doc, upsert: true },
-      })),
-    );
-  }
 }

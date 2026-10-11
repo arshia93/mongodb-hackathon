@@ -16,7 +16,6 @@
   "devDependencies": {
     "@types/node": "^22",
     "@types/react": "^19",
-    "mongodb-memory-server": "^10",
     "tsx": "^4",
     "typescript": "^5.6.0"
   }

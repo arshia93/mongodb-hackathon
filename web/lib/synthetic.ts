@@ -8,7 +8,7 @@ import {
   type Category,
   type Result as ResultT,
   type Run as RunT,
-} from "./schemas";
+} from "@preflight/core";
 
 const CREATED_AT = new Date("2026-10-10T09:00:00Z");
 
