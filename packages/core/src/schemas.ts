@@ -57,8 +57,8 @@ export type ScenarioSource = z.infer<typeof ScenarioSource>;
 // plus what the judge needs to grade the rollout.
 export const ScenarioShape = z.object({
   _id: z.string().optional(),
-  // The environment+routine under test: its file name without .md, e.g. "email-client--triage-inbox".
-  targetId: z.string(),
+  // The job under test: the routine file name without .md, e.g. "car-dealership-email--morning-inbox-triage".
+  jobId: z.string(),
   category: Category,
   title: z.string().min(1),
   // The specifics the environment leaves open (markdown), e.g. the exact emails in the inbox.
@@ -131,7 +131,7 @@ export type Verdict = z.infer<typeof Verdict>;
 // collection: runs
 export const Run = z.object({
   _id: z.string().optional(),
-  targetId: z.string(),
+  jobId: z.string(),
   status: RunStatus,
   mode: RunMode,
   models: z.object({ default: z.string(), judge: z.string() }),
@@ -144,9 +144,17 @@ export const Run = z.object({
     })
     .optional(),
   verdict: Verdict.optional(),
-  // Pull mode: which scenario/turn we're on. Lives in Mongo because serverless has no memory.
+  // Pull mode: everything needed to resume between calls. Lives in Mongo because serverless has no memory.
   pullState: z
-    .object({ scenarioIndex: z.number(), turnIndex: z.number(), pendingMessage: z.string().optional() })
+    .object({
+      scenarios: z.array(Scenario).default([]),
+      scenarioIndex: z.number(),
+      // Transcript of the scenario in progress.
+      transcript: z.array(Turn).default([]),
+      // Judge output for each finished scenario, in scenario order.
+      results: z.array(JudgeOutput).default([]),
+      pendingMessage: z.string().optional(),
+    })
     .optional(),
   createdAt: z.coerce.date().optional(),
   finishedAt: z.coerce.date().optional(),
