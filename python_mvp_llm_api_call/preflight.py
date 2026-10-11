@@ -26,8 +26,9 @@ PROMPTS = ROOT / "agent" / "subagents"
 OUT = HERE / "out"
 
 DEFAULT_JOB = "car-dealership-email--morning-inbox-triage"
-MODEL = os.environ.get("PREFLIGHT_MODEL", "claude-sonnet-5-5")  # agent under test, planner, simulator
-JUDGE_MODEL = os.environ.get("PREFLIGHT_JUDGE_MODEL", "claude-opus-5-5")
+DEFAULT_MODEL = "claude-haiku-4-5-20251001"
+MODEL = os.environ.get("PREFLIGHT_MODEL", DEFAULT_MODEL)  # agent under test, planner, simulator
+JUDGE_MODEL = os.environ.get("PREFLIGHT_JUDGE_MODEL", DEFAULT_MODEL)
 
 # System prompt prefix for the agent under test; the environment and routine text follow it.
 AGENT_PREAMBLE = (
@@ -253,19 +254,30 @@ def cmd_judge(args):
 
 def main():
     global client
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    class HelpFormatter(argparse.RawDescriptionHelpFormatter, argparse.ArgumentDefaultsHelpFormatter):
+        pass
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        epilog=f"models: {MODEL} (agent, planner, simulator), {JUDGE_MODEL} (judge); "
+               "override with PREFLIGHT_MODEL / PREFLIGHT_JUDGE_MODEL",
+        formatter_class=HelpFormatter,
+    )
     commands = parser.add_subparsers(dest="command", required=True)
 
-    create = commands.add_parser("create", help="plan scenarios for a job")
-    create.add_argument("job_id", nargs="?", default=DEFAULT_JOB)
+    create = commands.add_parser("create", help="plan scenarios for a job", formatter_class=HelpFormatter)
+    create.add_argument("job_id", nargs="?", default=DEFAULT_JOB,
+                        help="routine file name without .md (see environment_plus_routines/routines/)")
     create.add_argument("-n", type=int, default=1, help="how many scenarios to plan")
 
-    simulate = commands.add_parser("simulate", help="run the agent against the simulator for one scenario")
-    simulate.add_argument("scenario_id")
+    simulate = commands.add_parser("simulate", help="run the agent against the simulator for one scenario",
+                                   formatter_class=HelpFormatter)
+    simulate.add_argument("scenario_id", help="id printed by create")
     simulate.add_argument("--max-turns", type=int, help="override the scenario's own cap")
 
-    judge = commands.add_parser("judge", help="grade one trajectory")
-    judge.add_argument("trajectory_id")
+    judge = commands.add_parser("judge", help="grade one trajectory", formatter_class=HelpFormatter)
+    judge.add_argument("trajectory_id", help="id printed by simulate")
 
     args = parser.parse_args()
     load_env_file()

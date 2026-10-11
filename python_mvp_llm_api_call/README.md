@@ -33,9 +33,9 @@ Every role is a `Chat`: one Claude model, one system prompt, its own message his
 
 | Role | System prompt | Model |
 |---|---|---|
-| Agent under test | short preamble + environment `.md` + routine `.md` | `PREFLIGHT_MODEL` (claude-sonnet-5-5) |
+| Agent under test | short preamble + environment `.md` + routine `.md` | `PREFLIGHT_MODEL` (default `claude-haiku-4-5-20251001`) |
 | Planner | `agent/subagents/planner/instructions.md` | same |
 | Simulator | `agent/subagents/simulator/instructions.md` + environment + scenario state | same |
-| Judge | `agent/subagents/judge/instructions.md` | `PREFLIGHT_JUDGE_MODEL` (claude-opus-5-5) |
+| Judge | `agent/subagents/judge/instructions.md` | `PREFLIGHT_JUDGE_MODEL` (default `claude-haiku-4-5-20251001`) |
 
 The agent has no real tools; it writes tool calls as text and the simulator answers as the environment would. If the simulator's reply isn't parseable JSON, it is written into the trajectory and the run stops, so nothing is lost.
