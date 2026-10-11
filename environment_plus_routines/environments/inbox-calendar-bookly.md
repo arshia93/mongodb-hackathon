@@ -1,3 +1,4 @@
+# Environment
 <!--
 TEMPLATE NOTES (delete before use)
 - This environment is used by environment_plus_routines/routines/inbox-calendar-bookly--book-gtm-intro-calls.md.
@@ -17,8 +18,6 @@ TEMPLATE NOTES (delete before use)
   F9  timezone arithmetic (DST gap between US and Europe in mid-March; lead's "afternoon" vs ours)
   F10 agent sends the Bookly link or answers product/pricing questions instead of booking or filing
 -->
-
-# Environment
 ## Description
 The environment is the work Gmail inbox of the Head of GTM at a seed-stage B2B software startup, plus read-only access to their Google Calendar and read/write access to Bookly, a Calendly-style booking tool connected to that calendar. The features below never change across scenarios.
 
