@@ -4,3 +4,4 @@ export * from "./runner";
 export * from "./environment";
 export * from "./json";
 export * from "./scenario-markdown";
+export * from "./simulator";
