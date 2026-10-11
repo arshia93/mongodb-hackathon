@@ -23,10 +23,10 @@ const handler = createMcpHandler((server) => {
     "preflight_run_suite",
     {
       title: "Run suite",
-      description: "Start a QA run against a registered target. Returns runId.",
-      inputSchema: { targetId: z.string(), mode: RunMode },
+      description: "Start a QA run for a job (a routine file name without .md, e.g. car-dealership-email--morning-inbox-triage). Returns runId.",
+      inputSchema: { jobId: z.string(), mode: RunMode },
     },
-    async ({ targetId, mode }) => asText(await runner.startRun(targetId, mode)),
+    async ({ jobId, mode }) => asText(await runner.startRun(jobId, mode)),
   );
 
   server.registerTool(

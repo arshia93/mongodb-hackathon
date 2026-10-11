@@ -52,10 +52,10 @@ describe("parseScenarioSet", () => {
 });
 
 describe("toScenario", () => {
-  it("attaches targetId and defaults source to planner", () => {
+  it("attaches jobId and defaults source to planner", () => {
     const planned = parseScenarioSet(set).scenarios[0];
     const s = toScenario(planned, "t1");
-    expect(s.targetId).toBe("t1");
+    expect(s.jobId).toBe("t1");
     expect(s.source).toBe("planner");
     expect(toScenario(planned, "t1", "manual").source).toBe("manual");
   });
