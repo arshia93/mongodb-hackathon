@@ -52,17 +52,8 @@ describe("MCP push tools", () => {
     ]);
   });
 
-  it("registers a target, starts a run, and reads it back as queued", async () => {
-    const reg = await callJson(client, "preflight_register_target", {
-      name: "Test bot",
-      description: "Agent registered by the MCP test",
-      adapter: { kind: "pull" },
-    });
-    expect(reg.isError).toBeFalsy();
-    const { targetId } = reg.body as { targetId: string };
-    created.push({ collection: "targets", id: targetId });
-
-    const run = await callJson(client, "preflight_run_suite", { targetId, mode: "push" });
+  it("starts a run for a job and reads it back as queued", async () => {
+    const run = await callJson(client, "preflight_run_suite", { jobId: "car-dealership-email--morning-inbox-triage", mode: "push" });
     expect(run.isError).toBeFalsy();
     const { runId } = run.body as { runId: string };
     created.push({ collection: "runs", id: runId });
@@ -81,12 +72,12 @@ describe("MCP push tools", () => {
     expect(report.body.dashboardPath).toBe("/runs/syn_run_refund_001");
   });
 
-  it("returns a tool error for an unknown target", async () => {
+  it("returns a tool error for an unknown job", async () => {
     const run = await callJson(client, "preflight_run_suite", {
-      targetId: "does-not-exist",
+      jobId: "does-not-exist",
       mode: "push",
     });
     expect(run.isError).toBe(true);
-    expect(run.text).toContain("target not found");
+    expect(run.text).toContain("Job not found");
   });
 });

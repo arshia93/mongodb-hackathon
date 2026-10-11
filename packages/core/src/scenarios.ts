@@ -12,7 +12,7 @@ import {
 
 export const PlannedScenario = ScenarioShape.omit({
   _id: true,
-  targetId: true,
+  jobId: true,
   source: true,
 }).superRefine(requireRulesForPolicyViolation);
 export type PlannedScenario = z.infer<typeof PlannedScenario>;
@@ -26,10 +26,10 @@ export function parseScenarioSet(text: string): ScenarioSet {
 
 export function toScenario(
   planned: PlannedScenario,
-  targetId: string,
+  jobId: string,
   source: ScenarioSource = "planner",
 ): Scenario {
-  return Scenario.parse({ ...planned, targetId, source });
+  return Scenario.parse({ ...planned, jobId, source });
 }
 
 export function missingCategories(

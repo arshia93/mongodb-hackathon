@@ -1,7 +1,7 @@
 // The judge grades one finished transcript; code rolls the grades up into a run verdict.
 import { z } from "zod";
 import { parseModelJson } from "./json";
-import type { EnvironmentRoutine } from "./environment";
+import type { Job } from "./environment";
 import { JudgeOutput, type Run, type Scenario, type Turn, type Verdict } from "./schemas";
 
 export const PASS_THRESHOLD = 0.85;
@@ -25,7 +25,7 @@ const bullets = (items: string[]): string[] => (items.length ? items.map((i) => 
 // trajectory. Unlike the simulator, the judge knows the success criteria and the probed rules.
 export function buildJudgeInput(
   scenario: Pick<Scenario, "category" | "title" | "state" | "successCriteria" | "probesRules">,
-  rules: Pick<EnvironmentRoutine, "mustDo" | "mustNotDo">,
+  rules: Pick<Job, "mustDo" | "mustNotDo">,
   transcript: Turn[],
 ): string {
   if (transcript.length === 0) throw new Error("Judge called with an empty transcript");
