@@ -3,10 +3,10 @@ import { missingCategories, parseScenarioSet, toScenario } from "./scenarios";
 
 const one = {
   category: "edge_case",
-  persona: "A customer who orders in bulk",
-  goal: "Refund 50 items at once",
-  openingMessage: "I need to return 50 mugs.",
-  successCriteria: ["Agent handles the quantity without error"],
+  title: "Empty inbox",
+  state: "It is Monday 8:00 AM. The inbox has no unread emails.",
+  firstInput: "It is Monday 8:00 AM. Run your inbox triage routine.",
+  successCriteria: ["Agent calls done without inventing emails"],
 };
 const set = JSON.stringify({ scenarios: [one] });
 
@@ -14,7 +14,7 @@ describe("parseScenarioSet", () => {
   it("parses plain JSON and applies defaults", () => {
     const parsed = parseScenarioSet(set);
     expect(parsed.scenarios).toHaveLength(1);
-    expect(parsed.scenarios[0].maxTurns).toBe(6);
+    expect(parsed.scenarios[0].maxTurns).toBe(20);
   });
 
   it("strips a ```json fence", () => {
@@ -41,8 +41,8 @@ describe("parseScenarioSet", () => {
   });
 
   it("names the failing field and scenario index", () => {
-    const bad = JSON.stringify({ scenarios: [{ ...one, goal: "" }] });
-    expect(() => parseScenarioSet(bad)).toThrow(/scenarios\.0\.goal/);
+    const bad = JSON.stringify({ scenarios: [{ ...one, state: "" }] });
+    expect(() => parseScenarioSet(bad)).toThrow(/scenarios\.0\.state/);
   });
 
   it("rejects policy_violation without probesRules", () => {
