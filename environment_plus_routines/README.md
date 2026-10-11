@@ -6,15 +6,17 @@ You should understand these definitions:
 3. By a "scenario" we mean the tuple (environment, state). So "Google Calendar" is NOT a scenario, but "Google Calendar with these specific events in it" IS a scenario.
 4. By a "routine" we mean a task description for an LLM under test (i.e. GrokBot) to behave in an environment conditioned on its state (in other words, a task description for what to do under different scenarios).
 
+This is meant for agents that run on a schedule or under triggers, such as GrokBot, OpenClaw, Muse, etc. GrokBot is alluded to throughout because the developers of this repository have used it, but the approach is not exclusive to GrokBot. The goal of this system is to find problems with the LLM under test, not to fix them. Fixing is left to the user or developers afterwards; most commonly by changing the prompt the LLM under test gets for the routine (e.g. better specifying how to prioritize emails, how to write formally and correctly, what the no-nos are for corporate outreach, etc., depending on the routine and environment).
+
 You should understand that in our stack we have various LLMs enabling this.
-- The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios and then in real scenarios. We simulate scenarios to find the mistakes the agent commonly makes so we can fix its prompts (etc.) BEFORE deploying it to the real world (real email clients, real calendars, real customers in customer support, etc.).
+- The LLM under test (i.e. GrokBot) is responsible for doing the routine. It is going to do the routine on (LLM) simulated scenarios and then in real scenarios. We simulate scenarios to find the mistakes the agent commonly makes so they can be fixed BEFORE deploying it to the real world (real email clients, real calendars, real customers in customer support, etc.).
 - The LLM Planner takes in an environment plus routine and produces one or more scenarios to test that routine, along with the information an LLM Judge needs to grade the resulting trajectory (rollout) from the LLM under test. Each scenario is a markdown file with sections in a specific format; that format is defined elsewhere in this codebase, not here.
 - The simulator LLM is responsible for taking in a scenario (environment + state) and producing realistic inputs and outputs for the LLM under test to interact with.
 - The LLM Judge is responsible for grading the resulting trajectory (rollout) from the LLM under test.
 - The QA system is an MCP-accessible service that an LLM under test could access to create the scenarios and test itself on them (step by step).
 
 ## How environments plus routines are set up
-Each environment plus routine is a markdown file under `environment_plus_routines/contents`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). Each one is a single markdown file with two root sections: (1) the environment description and (2) the routine description. The environment description has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios. It is written in third person always. It may look like what you see below:
+Each environment plus routine is a markdown file under `environment_plus_routines/contents`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). Each one is a single markdown file with two root sections, in this order: (1) the environment description and (2) the routine description. The environment description has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios, which serve as few-shot examples for the Planner to come up with good scenarios. It is written in third person always. It may look like what you see below:
 ```markdown
 # Environment
 ## Description
@@ -59,3 +61,6 @@ Description goes here...
 ### Other constraints
 ...
 ```
+
+## Things to note
+Right now we will have only a small number of environments plus routines for the hackathon, so we do not split environments and routines into separate files (the environment description is repeated in each file that uses it). For a real project that could be different.
