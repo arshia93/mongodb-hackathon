@@ -83,6 +83,7 @@ export function requireRulesForPolicyViolation(
   }
 }
 
+// Scenario is refined, so .extend/.pick/.omit are unavailable; derive from ScenarioShape and re-apply requireRulesForPolicyViolation.
 export const Scenario = ScenarioShape.superRefine(requireRulesForPolicyViolation);
 export type Scenario = z.infer<typeof Scenario>;
 

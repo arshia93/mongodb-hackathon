@@ -30,6 +30,12 @@ describe("parseScenarioSet", () => {
     expect(() => parseScenarioSet("Here are your scenarios!")).toThrow(/^Invalid scenario set:/);
   });
 
+  it("rejects prose before a fenced block", () => {
+    expect(() => parseScenarioSet("Here are your scenarios:\n```json\n" + set + "\n```")).toThrow(
+      /^Invalid scenario set:/,
+    );
+  });
+
   it("rejects an empty list", () => {
     expect(() => parseScenarioSet('{"scenarios":[]}')).toThrow(/^Invalid scenario set:/);
   });

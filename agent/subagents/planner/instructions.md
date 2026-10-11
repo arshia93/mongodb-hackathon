@@ -49,4 +49,4 @@ Return only the JSON, shaped like this (no prose before or after; a code fence i
 }
 ```
 
-Do not include `targetId`, `_id` or `source`; the system adds them. If past failures for this target are supplied, include a regression scenario for each.
+Do not include `targetId`, `_id` or `source`; the system adds them.
