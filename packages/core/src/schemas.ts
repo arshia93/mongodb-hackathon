@@ -53,18 +53,22 @@ export type Target = z.infer<typeof Target>;
 export const ScenarioSource = z.enum(["planner", "regression", "manual", "production"]);
 export type ScenarioSource = z.infer<typeof ScenarioSource>;
 
+// A scenario = an environment + a specific state (environment_plus_routines/README.md),
+// plus what the judge needs to grade the rollout.
 export const ScenarioShape = z.object({
   _id: z.string().optional(),
+  // The environment+routine under test: its file name without .md, e.g. "email-client--triage-inbox".
   targetId: z.string(),
   category: Category,
-  title: z.string().min(1).optional(),
-  persona: z.string().min(1),
-  goal: z.string().min(1),
-  openingMessage: z.string().min(1),
+  title: z.string().min(1),
+  // The specifics the environment leaves open (markdown), e.g. the exact emails in the inbox.
+  state: z.string().min(1),
+  // What the agent under test receives first: a trigger, a person's message, etc.
+  firstInput: z.string().min(1),
   successCriteria: z.array(z.string().min(1)).min(1),
-  // Upper bound on simulated-user turns before the simulator must stop.
-  maxTurns: z.number().int().min(1).max(20).default(6),
-  // Which of the target's mustRules / mustNotRules this scenario tries to break (verbatim text).
+  // Safety cap on agent steps; normally the simulator ends the rollout first.
+  maxTurns: z.number().int().min(1).max(50).default(20),
+  // Routine constraints ("Things to do" / "Things to NOT do") this scenario tests, verbatim.
   probesRules: z.array(z.string().min(1)).default([]),
   source: ScenarioSource.default("planner"),
 });
@@ -87,8 +91,10 @@ export function requireRulesForPolicyViolation(
 export const Scenario = ScenarioShape.superRefine(requireRulesForPolicyViolation);
 export type Scenario = z.infer<typeof Scenario>;
 
+// environment = anything the simulator produces (trigger, tool result, a person's message);
+// agent = anything the agent under test emits (tool call, message).
 export const Turn = z.object({
-  role: z.enum(["user", "agent"]),
+  role: z.enum(["environment", "agent"]),
   content: z.string(),
 });
 export type Turn = z.infer<typeof Turn>;
