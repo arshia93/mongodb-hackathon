@@ -16,7 +16,7 @@ You should understand that in our stack we have various LLMs enabling this.
 - The QA system is an MCP-accessible service that an LLM under test could access to create the scenarios and test itself on them (step by step).
 
 ## How environments plus routines are set up
-Each environment plus routine is a markdown file under `environment_plus_routines/contents`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). Each one is a single markdown file with two root sections: (1) the environment description and (2) the routine description. The environment description has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios. It is written in third person always. It may look like what you see below:
+Each environment plus routine is a markdown file under `environment_plus_routines/contents`, named `<environment>--<routine>.md` in kebab-case (e.g. `email-client--triage-inbox.md`). Each one is a single markdown file with two root sections, in this order: (1) the environment description and (2) the routine description. The environment description has a description of (a) the input and output format of the environment, written from the perspective of the LLM under test (what it receives as input and what it can emit as output), for the simulator to faithfully represent it, and (b) the dynamics of the environment and their semantics. This may have some examples of scenarios, which serve as few-shot examples for the Planner to come up with good scenarios. It is written in third person always. It may look like what you see below:
 ```markdown
 # Environment
 ## Description
@@ -61,3 +61,6 @@ Description goes here...
 ### Other constraints
 ...
 ```
+
+## Things to note
+Right now we will have only a small number of environments plus routines for the hackathon, so we do not split environments and routines into separate files (the environment description is repeated in each file that uses it). For a real project that could be different.
