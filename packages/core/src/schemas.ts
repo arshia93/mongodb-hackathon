@@ -50,19 +50,51 @@ export const Target = z.object({
 export type Target = z.infer<typeof Target>;
 
 // collection: scenarios
-export const Scenario = z.object({
+export const ScenarioSource = z.enum(["planner", "regression", "manual", "production"]);
+export type ScenarioSource = z.infer<typeof ScenarioSource>;
+
+// A scenario = an environment + a specific state (environment_plus_routines/README.md),
+// plus what the judge needs to grade the rollout.
+export const ScenarioShape = z.object({
   _id: z.string().optional(),
-  targetId: z.string(),
+  // The job under test: the routine file name without .md, e.g. "car-dealership-email--morning-inbox-triage".
+  jobId: z.string(),
   category: Category,
-  persona: z.string(),
-  goal: z.string(),
-  openingMessage: z.string(),
-  successCriteria: z.array(z.string()),
+  title: z.string().min(1),
+  // The specifics the environment leaves open (markdown), e.g. the exact emails in the inbox.
+  state: z.string().min(1),
+  // What the agent under test receives first: a trigger, a person's message, etc.
+  firstInput: z.string().min(1),
+  successCriteria: z.array(z.string().min(1)).min(1),
+  // Safety cap on agent steps; normally the simulator ends the rollout first.
+  maxTurns: z.number().int().min(1).max(50).default(20),
+  // Routine constraints ("Things to do" / "Things to NOT do") this scenario tests, verbatim.
+  probesRules: z.array(z.string().min(1)).default([]),
+  source: ScenarioSource.default("planner"),
 });
+
+// A policy_violation scenario with no rule to probe gives the judge nothing to grade against.
+export function requireRulesForPolicyViolation(
+  s: { category: Category; probesRules: string[] },
+  ctx: z.RefinementCtx,
+): void {
+  if (s.category === "policy_violation" && s.probesRules.length === 0) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["probesRules"],
+      message: "policy_violation scenarios must list the rule(s) they probe",
+    });
+  }
+}
+
+// Scenario is refined, so .extend/.pick/.omit are unavailable; derive from ScenarioShape and re-apply requireRulesForPolicyViolation.
+export const Scenario = ScenarioShape.superRefine(requireRulesForPolicyViolation);
 export type Scenario = z.infer<typeof Scenario>;
 
+// environment = anything the simulator produces (trigger, tool result, a person's message);
+// agent = anything the agent under test emits (tool call, message).
 export const Turn = z.object({
-  role: z.enum(["user", "agent"]),
+  role: z.enum(["environment", "agent"]),
   content: z.string(),
 });
 export type Turn = z.infer<typeof Turn>;
@@ -99,7 +131,7 @@ export type Verdict = z.infer<typeof Verdict>;
 // collection: runs
 export const Run = z.object({
   _id: z.string().optional(),
-  targetId: z.string(),
+  jobId: z.string(),
   status: RunStatus,
   mode: RunMode,
   models: z.object({ default: z.string(), judge: z.string() }),
@@ -112,9 +144,17 @@ export const Run = z.object({
     })
     .optional(),
   verdict: Verdict.optional(),
-  // Pull mode: which scenario/turn we're on. Lives in Mongo because serverless has no memory.
+  // Pull mode: everything needed to resume between calls. Lives in Mongo because serverless has no memory.
   pullState: z
-    .object({ scenarioIndex: z.number(), turnIndex: z.number(), pendingMessage: z.string().optional() })
+    .object({
+      scenarios: z.array(Scenario).default([]),
+      scenarioIndex: z.number(),
+      // Transcript of the scenario in progress.
+      transcript: z.array(Turn).default([]),
+      // Judge output for each finished scenario, in scenario order.
+      results: z.array(JudgeOutput).default([]),
+      pendingMessage: z.string().optional(),
+    })
     .optional(),
   createdAt: z.coerce.date().optional(),
   finishedAt: z.coerce.date().optional(),
